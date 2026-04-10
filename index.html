@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CO Advanced Bot — Control Panel v6.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0b0c10;
+  --bg2: #111318;
+  --bg3: #181c24;
+  --surface: #1e2230;
+  --surface2: #252b3b;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaf2;
+  --text2: #8b90a6;
+  --text3: #555c77;
+  --accent: #5865F2;
+  --accent2: #4752c4;
+  --gold: #FFD700;
+  --sky: #4FC3F7;
+  --green: #2ecc71;
+  --red: #e74c3c;
+  --orange: #FF6B35;
+  --warn: #f39c12;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────── */
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  width: 38px; height: 38px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.logo-text {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.logo-text span {
+  display: block;
+  font-size: 10px;
+  color: var(--text3);
+  font-weight: 400;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 3px 8px;
+  background: rgba(46,204,113,0.1);
+  border: 1px solid rgba(46,204,113,0.25);
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--green);
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100%{ opacity:1; transform: scale(1); }
+  50%{ opacity:0.5; transform: scale(1.3); }
+}
+
+.nav-section {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.nav-label {
+  padding: 8px 20px 4px;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 13px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  color: var(--text);
+  background: rgba(88,101,242,0.1);
+  border-left-color: var(--accent);
+}
+.nav-item .nav-icon { font-size: 14px; width: 20px; text-align: center; }
+.nav-item .nav-badge {
+  margin-left: auto;
+  padding: 1px 6px;
+  background: var(--accent);
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: white;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.version-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+}
+
+/* ── MAIN CONTENT ─────────────────────────────────────── */
+.main {
+  margin-left: 240px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.topbar {
+  height: 56px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.topbar-subtitle {
+  font-size: 12px;
+  color: var(--text3);
+}
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-family: var(--sans);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text2);
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--surface2); color: var(--text); }
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.btn.primary:hover { background: var(--accent2); }
+.btn.danger {
+  background: rgba(231,76,60,0.1);
+  border-color: rgba(231,76,60,0.3);
+  color: var(--red);
+}
+.btn.danger:hover { background: rgba(231,76,60,0.2); }
+.btn.success {
+  background: rgba(46,204,113,0.1);
+  border-color: rgba(46,204,113,0.3);
+  color: var(--green);
+}
+.btn.success:hover { background: rgba(46,204,113,0.2); }
+.btn.warn {
+  background: rgba(243,156,18,0.1);
+  border-color: rgba(243,156,18,0.3);
+  color: var(--warn);
+}
+.btn.warn:hover { background: rgba(243,156,18,0.2); }
+
+.content { padding: 28px; flex: 1; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── PAGE HEADER ─────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+.page-subtitle {
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 3px;
+}
+
+/* ── STAT GRID ───────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.stat-card.blue::before { background: var(--accent); }
+.stat-card.gold::before { background: var(--gold); }
+.stat-card.green::before { background: var(--green); }
+.stat-card.sky::before { background: var(--sky); }
+.stat-card.orange::before { background: var(--orange); }
+.stat-card.red::before { background: var(--red); }
+.stat-label {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: var(--mono);
+  margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--text);
+  line-height: 1;
+}
+.stat-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 5px;
+}
+.stat-icon {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 20px;
+  opacity: 0.3;
+}
+
+/* ── PANEL GRID ──────────────────────────────────────── */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.panel-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-body { padding: 18px; }
+.panel-actions { display: flex; gap: 8px; }
+
+/* ── UPTIME DISPLAY ──────────────────────────────────── */
+.uptime-display {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+.latency-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.latency-val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+}
+.latency-dots {
+  display: flex;
+  gap: 3px;
+}
+.latency-dot {
+  width: 8px; height: 22px;
+  border-radius: 2px;
+  background: var(--border2);
+}
+.latency-dot.lit { background: var(--green); }
+
+/* ── LOG FEED ────────────────────────────────────────── */
+.log-feed {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+}
+.log-line {
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.log-time { color: var(--text3); flex-shrink: 0; }
+.log-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  padding: 0 5px;
+  border-radius: 3px;
+}
+.log-tag.ok { background: rgba(46,204,113,0.15); color: var(--green); }
+.log-tag.warn { background: rgba(243,156,18,0.15); color: var(--warn); }
+.log-tag.err { background: rgba(231,76,60,0.15); color: var(--red); }
+.log-tag.info { background: rgba(88,101,242,0.15); color: var(--accent); }
+.log-msg { color: var(--text2); }
+
+/* ── CONFIG EDITOR ───────────────────────────────────── */
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.config-field.full { grid-column: 1 / -1; }
+.field-label {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.field-input {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field-input:focus { border-color: var(--accent); }
+.field-input.secret { letter-spacing: 3px; color: var(--text3); }
+select.field-input { cursor: pointer; }
+textarea.field-input { min-height: 80px; resize: vertical; font-size: 12px; }
+
+/* ── COG TABLE ───────────────────────────────────────── */
+.cog-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.cog-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text3);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.cog-table td {
+  padding: 11px 14px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.cog-table tr:last-child td { border-bottom: none; }
+.cog-table tr:hover td { background: rgba(255,255,255,0.02); }
+.cog-name { font-family: var(--mono); color: var(--text); font-size: 12px; }
+.cog-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: var(--mono);
+}
+.cog-status.loaded { background: rgba(46,204,113,0.1); color: var(--green); }
+.cog-status.error { background: rgba(231,76,60,0.1); color: var(--red); }
+.cog-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* ── COMMAND LIST ────────────────────────────────────── */
+.cmd-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.cmd-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.cmd-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+.cmd-desc { font-size: 11px; color: var(--text3); }
+.cmd-tag {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-family: var(--mono);
+}
+.cmd-tag.admin { background: rgba(255,107,53,0.15); color: var(--orange); }
+.cmd-tag.vip { background: rgba(255,215,0,0.15); color: var(--gold); }
+.cmd-tag.beryllium { background: rgba(79,195,247,0.15); color: var(--sky); }
+.cmd-tag.all { background: rgba(88,101,242,0.15); color: var(--accent); }
+
+/* ── MODERATION PANEL ────────────────────────────────── */
+.mod-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+.action-btn {
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-family: var(--mono);
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text2);
+  transition: all 0.15s;
+}
+.action-btn:hover { transform: translateY(-1px); }
+.action-btn.red:hover { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.1); }
+.action-btn.orange:hover { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.1); }
+.action-btn.warn:hover { border-color: var(--warn); color: var(--warn); background: rgba(243,156,18,0.1); }
+.action-btn.sky:hover { border-color: var(--sky); color: var(--sky); background: rgba(79,195,247,0.1); }
+.action-btn.blue:hover { border-color: var(--accent); color: var(--accent); background: rgba(88,101,242,0.1); }
+.action-btn.green:hover { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.1); }
+
+/* ── LOCKDOWN ────────────────────────────────────────── */
+.lockdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.lockdown-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lockdown-card.danger-card {
+  border-color: rgba(231,76,60,0.2);
+  background: rgba(231,76,60,0.04);
+}
+.lockdown-icon { font-size: 24px; }
+.lockdown-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.lockdown-desc { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+/* ── SECURITY MODULES ────────────────────────────────── */
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.sec-module {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.sec-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.sec-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.sec-desc { font-size: 10px; color: var(--text3); line-height: 1.4; }
+.toggle-switch {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 32px; height: 18px;
+  position: relative;
+  cursor: pointer;
+}
+.toggle-switch input { display: none; }
+.toggle-track {
+  position: absolute; inset: 0;
+  background: var(--border2);
+  border-radius: 9px;
+  transition: background 0.2s;
+}
+.toggle-switch input:checked + .toggle-track { background: var(--green); }
+.toggle-thumb {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-switch input:checked ~ .toggle-thumb { transform: translateX(14px); }
+
+/* ── VIP & BERYLLIUM ─────────────────────────────────── */
+.tier-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.tier-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+}
+.tier-card.featured {
+  border-color: rgba(79,195,247,0.4);
+  background: rgba(79,195,247,0.04);
+}
+.tier-price {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.tier-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.tier-desc { font-size: 11px; color: var(--text3); line-height: 1.5; }
+
+/* ── WELCOME PREVIEW ─────────────────────────────────── */
+.discord-embed {
+  background: var(--bg3);
+  border-left: 4px solid var(--green);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+.embed-title {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.embed-body { color: var(--text2); line-height: 1.5; }
+
+/* ── TICKET PANEL ────────────────────────────────────── */
+.ticket-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* ── NOTIFICATION ────────────────────────────────────── */
+.notification {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--text);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 320px;
+}
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+.notif-icon { font-size: 16px; }
+
+/* ── TABS ────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  width: fit-content;
+}
+.tab {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--text2);
+  transition: all 0.15s;
+  border: none;
+  background: none;
+}
+.tab.active { background: var(--surface2); color: var(--text); }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* ── SCROLLBAR ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .cmd-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .sidebar { width: 200px; }
+  .main { margin-left: 200px; }
+  .panel-grid { grid-template-columns: 1fr; }
+  .config-grid { grid-template-columns: 1fr; }
+  .tier-cards { grid-template-columns: 1fr; }
+}
+
+/* ── DIVIDER ─────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+
+/* ── BADGE ───────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: var(--mono);
+}
+.badge.gold { background: rgba(255,215,0,0.15); color: var(--gold); }
+.badge.sky { background: rgba(79,195,247,0.15); color: var(--sky); }
+.badge.green { background: rgba(46,204,113,0.15); color: var(--green); }
+.badge.red { background: rgba(231,76,60,0.15); color: var(--red); }
+.badge.orange { background: rgba(255,107,53,0.15); color: var(--orange); }
+.badge.blue { background: rgba(88,101,242,0.15); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ──────────────────────────────────────────────── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-badge">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">CO Bot
+        <span>Advanced Panel v6.1</span>
+      </div>
+    </div>
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      ONLINE
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <a class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">🏠</span> Dashboard
+    </a>
+    <a class="nav-item" onclick="showPage('config')">
+      <span class="nav-icon">⚙️</span> Configuration
+    </a>
+    <a class="nav-item" onclick="showPage('cogs')">
+      <span class="nav-icon">📦</span> Cogs
+      <span class="nav-badge">18</span>
+    </a>
+    <a class="nav-item" onclick="showPage('commands')">
+      <span class="nav-icon">💬</span> Commands
+      <span class="nav-badge">95+</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Management</div>
+    <a class="nav-item" onclick="showPage('moderation')">
+      <span class="nav-icon">🛡️</span> Moderation
+    </a>
+    <a class="nav-item" onclick="showPage('tickets')">
+      <span class="nav-icon">🎫</span> Tickets
+    </a>
+    <a class="nav-item" onclick="showPage('welcome')">
+      <span class="nav-icon">👋</span> Welcome
+    </a>
+    <a class="nav-item" onclick="showPage('roles')">
+      <span class="nav-icon">🎭</span> Roles
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Advanced</div>
+    <a class="nav-item" onclick="showPage('security')">
+      <span class="nav-icon">🔒</span> Security Suite
+      <span class="nav-badge" style="background:var(--red)">20</span>
+    </a>
+    <a class="nav-item" onclick="showPage('lockdown')">
+      <span class="nav-icon">🔴</span> Lockdown
+    </a>
+    <a class="nav-item" onclick="showPage('vip')">
+      <span class="nav-icon">👑</span> VIP & Beryllium
+    </a>
+    <a class="nav-item" onclick="showPage('activation')">
+      <span class="nav-icon">🔐</span> Activation
+    </a>
+    <a class="nav-item" onclick="showPage('vi')">
+      <span class="nav-icon">📢</span> Voice Inject
+    </a>
+    <a class="nav-item" onclick="showPage('customcmds')">
+      <span class="nav-icon">✏️</span> Custom Commands
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Logs</div>
+    <a class="nav-item" onclick="showPage('logs')">
+      <span class="nav-icon">📋</span> Activity Logs
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="version-tag">© CO Dev Team 2025<br/>Owner: ONR</div>
+  </div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────────────────────── -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-subtitle" id="topbar-sub">CO Advanced Bot v6.1</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn" onclick="notify('🔄 Syncing slash commands...', 'info'); setTimeout(()=>notify('✅ 95 commands synced globally!','ok'),1800)">⟳ Sync Commands</button>
+      <button class="btn danger" onclick="notify('🔴 Requesting bot shutdown...', 'warn'); setTimeout(()=>notify('🔴 Bot shutting down gracefully.','err'),1500)">⏻ Bot Off</button>
+      <button class="btn primary" onclick="notify('✅ Configuration saved!', 'ok')">💾 Save Config</button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══════════════════════════════════════════ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-subtitle">Real-time bot status and server overview</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <span class="badge green">● Online</span>
+          <span class="badge blue">v6.1</span>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-icon">🏠</div>
+          <div class="stat-label">Guilds</div>
+          <div class="stat-value" id="stat-guilds">—</div>
+          <div class="stat-sub">Servers active</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">Members</div>
+          <div class="stat-value" id="stat-members">—</div>
+          <div class="stat-sub">Across all servers</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-label">Latency</div>
+          <div class="stat-value" id="stat-latency">—</div>
+          <div class="stat-sub">ms ping</div>
+        </div>
+        <div class="stat-card sky">
+          <div class="stat-icon">💬</div>
+          <div class="stat-label">Commands</div>
+          <div class="stat-value">95+</div>
+          <div class="stat-sub">Global slash cmds</div>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <!-- Uptime Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">⏱️ Live Uptime</div>
+            <span class="badge green">● Live</span>
+          </div>
+          <div class="panel-body">
+            <div class="uptime-display" id="uptime-display">00d 00h 00m 00s</div>
+            <div class="latency-bar">
+              <div class="latency-val" id="latency-display">—</div>
+              <span style="font-size:11px;color:var(--text3)">ms</span>
+              <div class="latency-dots" id="latency-dots">
+                <div class="latency-dot"></div>
+                <div class="latency-dot"></div>
+                <div class="latency-dot"></div>
+                <div class="latency-dot"></div>
+                <div class="latency-dot"></div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div>
+                <div class="stat-label">Version</div>
+                <div style="font-family:var(--mono);font-size:14px;color:var(--text)">v6.1</div>
+              </div>
+              <div>
+                <div class="stat-label">Owner</div>
+                <div style="font-family:var(--mono);font-size:14px;color:var(--gold)">ONR</div>
+              </div>
+              <div>
+                <div class="stat-label">Developer</div>
+                <div style="font-family:var(--mono);font-size:12px;color:var(--text2)">CO Dev Team</div>
+              </div>
+              <div>
+                <div class="stat-label">Prefix</div>
+                <div style="font-family:var(--mono);font-size:14px;color:var(--accent)">!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Log -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">📋 Activity Feed</div>
+          </div>
+          <div class="panel-body" style="padding:10px">
+            <div class="log-feed" id="live-log"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Rotation -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🎮 Current Status</div>
+          <div class="panel-actions">
+            <button class="btn" onclick="nextStatus()">⟳ Next</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:42px;height:42px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px">🎮</div>
+            <div>
+              <div style="font-size:13px;color:var(--text2)" id="status-type">Playing</div>
+              <div style="font-family:var(--mono);font-size:15px;color:var(--text);margin-top:2px" id="status-text">ONR</div>
+            </div>
+            <div style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--mono)">Rotates every 15s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONFIG ══════════════════════════════════════════════ -->
+    <div class="page" id="page-config">
+      <div class="page-header">
+        <div>
+          <div class="page-title">⚙️ Configuration</div>
+          <div class="page-subtitle">Edit bot settings and save to config.json</div>
+        </div>
+        <button class="btn primary" onclick="saveConfig()">💾 Save Changes</button>
+      </div>
+
+      <div class="panel" style="margin-bottom:14px">
+        <div class="panel-header"><div class="panel-title">🔑 Core Settings</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Bot Token</label>
+              <input class="field-input secret" type="password" id="cfg-token" value="YOUR_BOT_TOKEN_HERE" placeholder="Discord Bot Token"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Command Prefix</label>
+              <input class="field-input" id="cfg-prefix" value="!"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Guild ID</label>
+              <input class="field-input" id="cfg-guild" value="123456789012345678"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Owner ID</label>
+              <input class="field-input" id="cfg-owner-id" value="123456789012345678"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Admin Role Name</label>
+              <input class="field-input" id="cfg-admin-role" value="Admin"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">VIP Role Name</label>
+              <input class="field-input" id="cfg-vip-role" value="VIP"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Uptime Channel</label>
+              <input class="field-input" id="cfg-uptime-ch" value="bot-status"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Auto Talk Channel</label>
+              <input class="field-input" id="cfg-autotalk" value="bot-status"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:14px">
+        <div class="panel-header"><div class="panel-title">🎫 Ticket Settings</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Category Name</label>
+              <input class="field-input" value="CO Tickets"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Log Channel</label>
+              <input class="field-input" value="ticket-logs"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Support Role</label>
+              <input class="field-input" value="Support"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Max Tickets Per User</label>
+              <input class="field-input" type="number" value="1"/>
+            </div>
+            <div class="config-field full">
+              <label class="field-label">Ticket Welcome Message</label>
+              <textarea class="field-input">Welcome to **CO Support**! A staff member will be with you shortly. Please describe your issue in detail below.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:14px">
+        <div class="panel-header"><div class="panel-title">🔐 Activation Settings</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Inactive Role Name</label>
+              <input class="field-input" value="Inactive"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Member Role Name</label>
+              <input class="field-input" value="Member"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Activation Channel</label>
+              <input class="field-input" value="activate"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">YouTube Channel Name</label>
+              <input class="field-input" value="devONR"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Max Attempts</label>
+              <input class="field-input" type="number" value="5"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Cooldown (seconds)</label>
+              <input class="field-input" type="number" value="30"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">🔒 Security Thresholds</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Raid Joins Per 10s</label>
+              <input class="field-input" type="number" value="8"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Spam Messages Per 5s</label>
+              <input class="field-input" type="number" value="6"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Channel Spread Limit</label>
+              <input class="field-input" type="number" value="5"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">New Account Days</label>
+              <input class="field-input" type="number" value="7"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">ZTAC Min Account Age (days)</label>
+              <input class="field-input" type="number" value="30"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">API Calls Per Minute</label>
+              <input class="field-input" type="number" value="30"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COGS ════════════════════════════════════════════════ -->
+    <div class="page" id="page-cogs">
+      <div class="page-header">
+        <div>
+          <div class="page-title">📦 Loaded Cogs</div>
+          <div class="page-subtitle">18 extensions loaded — 95 global + 34 guild-scoped commands</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <span class="badge green">18 Loaded</span>
+          <span class="badge red">0 Failed</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Extension Registry</div>
+          <button class="btn" onclick="notify('🔄 Reloading all cogs...', 'info'); setTimeout(()=>notify('✅ All 18 cogs reloaded!','ok'),2000)">⟳ Reload All</button>
+        </div>
+        <div style="overflow:auto">
+          <table class="cog-table">
+            <thead>
+              <tr>
+                <th>Cog Name</th>
+                <th>Description</th>
+                <th>Commands</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cog-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ COMMANDS ════════════════════════════════════════════ -->
+    <div class="page" id="page-commands">
+      <div class="page-header">
+        <div>
+          <div class="page-title">💬 Commands</div>
+          <div class="page-subtitle">Full command reference — 95 global + 34 guild-scoped</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab active" onclick="filterCmds('all', this)">All</button>
+        <button class="tab" onclick="filterCmds('admin', this)">Admin</button>
+        <button class="tab" onclick="filterCmds('beryllium', this)">Beryllium</button>
+        <button class="tab" onclick="filterCmds('vip', this)">VIP</button>
+        <button class="tab" onclick="filterCmds('all-users', this)">All Users</button>
+      </div>
+
+      <div class="cmd-grid" id="cmd-grid"></div>
+    </div>
+
+    <!-- ══ MODERATION ══════════════════════════════════════════ -->
+    <div class="page" id="page-moderation">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🛡️ Moderation</div>
+          <div class="page-subtitle">Execute moderation actions on server members</div>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">⚡ Quick Actions</div></div>
+          <div class="panel-body">
+            <div class="mod-form">
+              <div class="config-field">
+                <label class="field-label">Target User ID</label>
+                <input class="field-input" id="mod-user" placeholder="Discord User ID"/>
+              </div>
+              <div class="form-row">
+                <div class="config-field">
+                  <label class="field-label">Reason</label>
+                  <input class="field-input" id="mod-reason" placeholder="Reason for action"/>
+                </div>
+                <div class="config-field">
+                  <label class="field-label">Duration</label>
+                  <input class="field-input" id="mod-duration" placeholder="e.g. 1h, 7d (for timeout/mute)"/>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <div class="action-btn warn" onclick="modAction('⚠️ Warn')">⚠️<br/>Warn</div>
+                <div class="action-btn sky" onclick="modAction('🔇 Mute')">🔇<br/>Mute</div>
+                <div class="action-btn orange" onclick="modAction('⏱️ Timeout')">⏱️<br/>Timeout</div>
+                <div class="action-btn red" onclick="modAction('👢 Kick')">👢<br/>Kick</div>
+                <div class="action-btn red" onclick="modAction('🔨 Ban')">🔨<br/>Ban</div>
+                <div class="action-btn green" onclick="modAction('✅ Unban')">✅<br/>Unban</div>
+                <div class="action-btn blue" onclick="modAction('🧹 Purge')">🧹<br/>Purge</div>
+                <div class="action-btn sky" onclick="modAction('🔊 Slowmode')">🔊<br/>Slowmode</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">📋 Recent Actions</div></div>
+          <div class="panel-body" style="padding:10px">
+            <div class="log-feed" id="mod-log">
+              <div class="log-line">
+                <span class="log-time">--:--</span>
+                <span class="log-tag info">INFO</span>
+                <span class="log-msg">No actions yet this session.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">⚙️ Channel Settings</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Mod Log Channel</label>
+              <input class="field-input" value="mod-logs"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Mute Role Name</label>
+              <input class="field-input" value="Muted"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TICKETS ══════════════════════════════════════════════ -->
+    <div class="page" id="page-tickets">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🎫 Ticket System</div>
+          <div class="page-subtitle">Manage support tickets and categories</div>
+        </div>
+        <button class="btn primary" onclick="notify('📨 Ticket panel sent to #activate!','ok')">📤 Send Ticket Panel</button>
+      </div>
+
+      <div class="ticket-stats">
+        <div class="stat-card blue">
+          <div class="stat-label">Open Tickets</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Closed Today</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">Avg. Rating</div>
+          <div class="stat-value">—</div>
+        </div>
+        <div class="stat-card sky">
+          <div class="stat-label">Total Tickets</div>
+          <div class="stat-value">0</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">🗂️ Ticket Categories</div></div>
+        <div class="panel-body">
+          <div class="cmd-grid" style="grid-template-columns: repeat(5, 1fr)">
+            <div class="cmd-card" style="text-align:center">
+              <div style="font-size:20px">🛠️</div>
+              <div class="cmd-name" style="text-align:center">Support</div>
+              <span class="cmd-tag all">Active</span>
+            </div>
+            <div class="cmd-card" style="text-align:center">
+              <div style="font-size:20px">💳</div>
+              <div class="cmd-name" style="text-align:center">Billing</div>
+              <span class="cmd-tag all">Active</span>
+            </div>
+            <div class="cmd-card" style="text-align:center">
+              <div style="font-size:20px">🚨</div>
+              <div class="cmd-name" style="text-align:center">Report</div>
+              <span class="cmd-tag all">Active</span>
+            </div>
+            <div class="cmd-card" style="text-align:center">
+              <div style="font-size:20px">🤝</div>
+              <div class="cmd-name" style="text-align:center">Partner</div>
+              <span class="cmd-tag all">Active</span>
+            </div>
+            <div class="cmd-card" style="text-align:center">
+              <div style="font-size:20px">📝</div>
+              <div class="cmd-name" style="text-align:center">Other</div>
+              <span class="cmd-tag all">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WELCOME ══════════════════════════════════════════════ -->
+    <div class="page" id="page-welcome">
+      <div class="page-header">
+        <div>
+          <div class="page-title">👋 Welcome System</div>
+          <div class="page-subtitle">Configure join/leave messages and auto-roles</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">⚙️ Settings</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Welcome Channel</label>
+              <input class="field-input" id="welcome-ch" value="welcome" oninput="updateWelcomePreview()"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Auto Role Name</label>
+              <input class="field-input" value="Member"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Leave Channel</label>
+              <input class="field-input" value="welcome"/>
+            </div>
+            <div class="config-field"></div>
+            <div class="config-field full">
+              <label class="field-label">Welcome Message — use {mention}, {count}, {server}</label>
+              <textarea class="field-input" id="welcome-msg" oninput="updateWelcomePreview()">Welcome to **CO Server**, {mention}! 🎉
+You are our **{count}** member!
+Please read the rules and enjoy your stay.</textarea>
+            </div>
+            <div class="config-field full">
+              <label class="field-label">Leave Message — use {name}</label>
+              <textarea class="field-input">**{name}** has left the server. We'll miss you! 👋</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">👁️ Preview</div></div>
+        <div class="panel-body">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">📌 #welcome</div>
+          <div class="discord-embed">
+            <div class="embed-title">👋 Welcome to CO Server! | مرحباً بك!</div>
+            <div class="embed-body" id="welcome-preview">Welcome to <strong>CO Server</strong>, <span style="color:var(--accent)">@NewMember</span>! 🎉<br/>You are our <strong>42nd</strong> member!<br/>Please read the rules and enjoy your stay.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROLES ════════════════════════════════════════════════ -->
+    <div class="page" id="page-roles">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🎭 Role Management</div>
+          <div class="page-subtitle">Add, remove, and mass-manage server roles</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">⚡ Quick Role Actions</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">User ID</label>
+              <input class="field-input" id="role-user" placeholder="Discord User ID"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Role Name</label>
+              <input class="field-input" id="role-name" placeholder="Role name"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn success" onclick="roleAction('add')">➕ Add Role</button>
+            <button class="btn danger" onclick="roleAction('remove')">➖ Remove Role</button>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:500">Mass Role Operations</div>
+          <div class="action-buttons" style="grid-template-columns:repeat(3,1fr)">
+            <div class="action-btn blue" onclick="notify('📤 Role panel deployed!','ok')">📤 Send Role Panel</div>
+            <div class="action-btn orange" onclick="notify('🎭 Syncing role reactions...','info')">🔄 Sync Reactions</div>
+            <div class="action-btn warn" onclick="notify('⚠️ This would assign to all members.','warn')">👥 Mass Assign</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECURITY ════════════════════════════════════════════ -->
+    <div class="page" id="page-security">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🔒 Security Suite</div>
+          <div class="page-subtitle">20 defensive modules — Beryllium Exclusive</div>
+        </div>
+        <span class="badge sky">Beryllium</span>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card green">
+          <div class="stat-label">Active Modules</div>
+          <div class="stat-value" id="sec-active">20</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Threats Blocked</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-card sky">
+          <div class="stat-label">Security Log Channel</div>
+          <div class="stat-value" style="font-size:14px;margin-top:6px">security-logs</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">🔐 Defence Modules</div>
+          <button class="btn success" onclick="toggleAllSecurity(true)">Enable All</button>
+        </div>
+        <div class="panel-body" style="padding:14px">
+          <div class="security-grid" id="sec-modules"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LOCKDOWN ════════════════════════════════════════════ -->
+    <div class="page" id="page-lockdown">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🔴 Lockdown Suite</div>
+          <div class="page-subtitle">Emergency server controls — Admin & Owner only</div>
+        </div>
+        <span class="badge orange">Admin Only</span>
+      </div>
+
+      <div style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--red)">
+        ⚠️ <strong>Warning:</strong> Lockdown actions are irreversible and will affect all server members. Use with extreme caution.
+      </div>
+
+      <div class="lockdown-grid">
+        <div class="lockdown-card">
+          <div class="lockdown-icon">🔒</div>
+          <div class="lockdown-title">Server Lock</div>
+          <div class="lockdown-desc">Disable messaging in all channels. Members cannot send messages until unlocked.</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn danger" onclick="lockdownAction('lock server')">🔒 Lock Server</button>
+            <button class="btn success" onclick="lockdownAction('unlock server')">🔓 Unlock</button>
+          </div>
+        </div>
+        <div class="lockdown-card danger-card">
+          <div class="lockdown-icon">💥</div>
+          <div class="lockdown-title">Nuke Channels</div>
+          <div class="lockdown-desc">Delete and recreate channels to remove all messages. This is permanent and cannot be undone.</div>
+          <button class="btn danger" style="margin-top:8px" onclick="confirmDanger('nuke channels')">💥 Nuke Channels</button>
+        </div>
+        <div class="lockdown-card danger-card">
+          <div class="lockdown-icon">👢</div>
+          <div class="lockdown-title">Kick All Members</div>
+          <div class="lockdown-desc">Kick every non-admin member from the server immediately.</div>
+          <button class="btn danger" style="margin-top:8px" onclick="confirmDanger('kick all members')">👢 Kick Everyone</button>
+        </div>
+        <div class="lockdown-card">
+          <div class="lockdown-icon">⏻</div>
+          <div class="lockdown-title">Bot Shutdown</div>
+          <div class="lockdown-desc">Gracefully shut down the bot process. Requires restart to bring back online.</div>
+          <button class="btn danger" style="margin-top:8px" onclick="lockdownAction('shut down bot')">⏻ Shut Down Bot</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VIP & BERYLLIUM ════════════════════════════════════ -->
+    <div class="page" id="page-vip">
+      <div class="page-header">
+        <div>
+          <div class="page-title">👑 VIP & Beryllium</div>
+          <div class="page-subtitle">Manage premium members and subscription tiers</div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:14px">
+        <div class="panel-header"><div class="panel-title">👑 VIP Management — Owner Only</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">User ID</label>
+              <input class="field-input" id="vip-user" placeholder="Discord User ID"/>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Reason</label>
+              <input class="field-input" id="vip-reason" placeholder="Reason (optional)"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn" style="border-color:rgba(255,215,0,0.4);color:var(--gold)" onclick="notify('👑 VIP role granted!','ok')">👑 Grant VIP</button>
+            <button class="btn danger" onclick="notify('👑 VIP role revoked.','warn')">✖️ Revoke VIP</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:14px">
+        <div class="panel-header"><div class="panel-title">💠 Beryllium Subscription Tiers</div></div>
+        <div class="panel-body">
+          <div class="tier-cards">
+            <div class="tier-card">
+              <div style="font-size:22px">🔹</div>
+              <div class="tier-name" style="color:var(--sky)">Beryllium Starter</div>
+              <div class="tier-price">$4.99<span style="font-size:12px;color:var(--text3)">/mo</span></div>
+              <div class="tier-desc">All Beryllium commands + badge role + priority support queue</div>
+              <button class="btn" style="width:100%;margin-top:12px;justify-content:center" onclick="notify('💠 Assigning Beryllium Starter...','info')">Assign Tier</button>
+            </div>
+            <div class="tier-card featured">
+              <div style="font-size:22px">💠</div>
+              <div class="tier-name" style="color:var(--sky)">Beryllium Plus</div>
+              <div class="tier-price">$9.99<span style="font-size:12px;color:var(--text3)">/mo</span></div>
+              <div class="tier-desc">Starter + analytics dashboard + custom welcome card + exclusive channels</div>
+              <button class="btn primary" style="width:100%;margin-top:12px;justify-content:center" onclick="notify('💠 Assigning Beryllium Plus...','info')">Assign Tier</button>
+            </div>
+            <div class="tier-card">
+              <div style="font-size:22px">🌀</div>
+              <div class="tier-name" style="color:var(--sky)">Beryllium Pro</div>
+              <div class="tier-price">$19.99<span style="font-size:12px;color:var(--text3)">/mo</span></div>
+              <div class="tier-desc">Plus + full server-copy toolkit + all pro features</div>
+              <button class="btn" style="width:100%;margin-top:12px;justify-content:center" onclick="notify('💠 Assigning Beryllium Pro...','info')">Assign Tier</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTIVATION ══════════════════════════════════════════ -->
+    <div class="page" id="page-activation">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🔐 Activation System</div>
+          <div class="page-subtitle">AI-powered YouTube subscription verification — v3.0</div>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">⚙️ Configuration</div></div>
+          <div class="panel-body">
+            <div class="config-grid">
+              <div class="config-field">
+                <label class="field-label">YouTube Channel Name</label>
+                <input class="field-input" value="devONR"/>
+              </div>
+              <div class="config-field">
+                <label class="field-label">YouTube URL</label>
+                <input class="field-input" value="https://www.youtube.com/@devONR"/>
+              </div>
+              <div class="config-field">
+                <label class="field-label">Max Attempts</label>
+                <input class="field-input" type="number" value="5"/>
+              </div>
+              <div class="config-field">
+                <label class="field-label">Cooldown (sec)</label>
+                <input class="field-input" type="number" value="30"/>
+              </div>
+              <div class="config-field">
+                <label class="field-label">Activation Channel</label>
+                <input class="field-input" value="activate"/>
+              </div>
+              <div class="config-field">
+                <label class="field-label">Log Channel</label>
+                <input class="field-input" value="activation-logs"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">📊 Activation Stats</div></div>
+          <div class="panel-body">
+            <div style="display:grid;gap:12px">
+              <div class="stat-card green" style="padding:14px">
+                <div class="stat-label">Total Activations</div>
+                <div class="stat-value">0</div>
+              </div>
+              <div class="stat-card red" style="padding:14px">
+                <div class="stat-label">Failed Attempts</div>
+                <div class="stat-value">0</div>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <button class="btn primary" style="width:100%;justify-content:center" onclick="notify('📤 Activation panel sent to #activate!','ok')">📤 Send Activation Panel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VOICE INJECT ════════════════════════════════════════ -->
+    <div class="page" id="page-vi">
+      <div class="page-header">
+        <div>
+          <div class="page-title">📢 Voice Inject (VI)</div>
+          <div class="page-subtitle">Admin ghost-post with full audit log — /vi /vi_plain /vi_dm</div>
+        </div>
+        <span class="badge orange">Admin Only</span>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">📤 Send Message as Bot</div></div>
+        <div class="panel-body">
+          <div class="config-grid">
+            <div class="config-field">
+              <label class="field-label">Message Type</label>
+              <select class="field-input" id="vi-type">
+                <option>📢 Embed (/vi)</option>
+                <option>📝 Plain Text (/vi_plain)</option>
+                <option>📩 DM to User (/vi_dm)</option>
+              </select>
+            </div>
+            <div class="config-field">
+              <label class="field-label">Target Channel / User ID</label>
+              <input class="field-input" id="vi-target" placeholder="Channel mention or User ID"/>
+            </div>
+            <div class="config-field full">
+              <label class="field-label">Message Content</label>
+              <textarea class="field-input" id="vi-content" placeholder="Message text..."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn primary" onclick="viSend()">📢 Send Message</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <div class="panel-header"><div class="panel-title">📋 VI Audit Log</div></div>
+        <div class="panel-body" style="padding:10px">
+          <div class="log-feed" id="vi-log">
+            <div class="log-line">
+              <span class="log-time">--:--</span>
+              <span class="log-tag info">VI</span>
+              <span class="log-msg">No VI messages sent this session.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CUSTOM COMMANDS ════════════════════════════════════ -->
+    <div class="page" id="page-customcmds">
+      <div class="page-header">
+        <div>
+          <div class="page-title">✏️ Custom Commands</div>
+          <div class="page-subtitle">Create trigger-response commands stored in config.json</div>
+        </div>
+      </div>
+      <div class="panel-grid">
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">➕ Add Custom Command</div></div>
+          <div class="panel-body">
+            <div class="config-grid">
+              <div class="config-field">
+                <label class="field-label">Command Name (no prefix)</label>
+                <input class="field-input" id="cc-name" placeholder="hello"/>
+              </div>
+              <div class="config-field">
+                <label class="field-label">Plan</label>
+                <select class="field-input" id="cc-plan">
+                  <option value="free">Free</option>
+                  <option value="premium">Premium</option>
+                </select>
+              </div>
+              <div class="config-field full">
+                <label class="field-label">Response — {user} {mention} {server}</label>
+                <textarea class="field-input" id="cc-response" placeholder="Hello, {mention}! Welcome to {server}."></textarea>
+              </div>
+            </div>
+            <button class="btn primary" style="margin-top:12px" onclick="addCustomCmd()">➕ Add Command</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">📋 Registered Commands</div></div>
+          <div class="panel-body" style="padding:0">
+            <div id="cc-list" style="padding:10px;min-height:100px">
+              <div style="font-size:12px;color:var(--text3);text-align:center;padding:20px">No custom commands yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LOGS ════════════════════════════════════════════════ -->
+    <div class="page" id="page-logs">
+      <div class="page-header">
+        <div>
+          <div class="page-title">📋 Activity Logs</div>
+          <div class="page-subtitle">Live session log stream</div>
+        </div>
+        <button class="btn" onclick="document.getElementById('full-log').innerHTML=''; notify('🗑️ Logs cleared.','info')">🗑️ Clear</button>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">🖥️ Session Log</div></div>
+        <div class="panel-body" style="padding:10px">
+          <div class="log-feed" id="full-log" style="max-height:500px"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Notification -->
+<div class="notification" id="notification">
+  <span class="notif-icon" id="notif-icon">✅</span>
+  <span id="notif-text"></span>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────
+const startTime = Date.now();
+let currentPage = 'dashboard';
+let statusIdx = 0;
+let secActiveCount = 20;
+let customCmds = {};
+const viLogs = [];
+const modLogs = [];
+
+const STATUS_MESSAGES = [
+  {type:'Playing', text:'ONR'},
+  {type:'Watching', text:'CO Server v6.1'},
+  {type:'Listening to', text:'Developed by CO Dev Team'},
+  {type:'Playing', text:'Owner: ONR'},
+  {type:'Watching', text:'CO Support | ONR'},
+  {type:'Playing', text:'CO Bot v6.1 | ONR'},
+  {type:'Watching', text:'over the CO community'},
+];
+
+const COGS = [
+  {name:'activation', desc:'YouTube sub verification', cmds:8, tag:'admin'},
+  {name:'beryllium', desc:'Beryllium subscriber features', cmds:6, tag:'beryllium'},
+  {name:'customcmds', desc:'Custom trigger responses', cmds:0, tag:'all'},
+  {name:'fun', desc:'Fun & game commands', cmds:25, tag:'all'},
+  {name:'imageclick', desc:'Image click tracker', cmds:2, tag:'admin'},
+  {name:'info', desc:'Bot info & status', cmds:5, tag:'all'},
+  {name:'lang', desc:'Language string system', cmds:0, tag:'system'},
+  {name:'lockdown', desc:'Server lock/nuke/kick-all', cmds:6, tag:'admin'},
+  {name:'menus', desc:'Button control panel', cmds:1, tag:'admin'},
+  {name:'moderation', desc:'warn/mute/kick/ban/purge', cmds:12, tag:'admin'},
+  {name:'roles', desc:'Role management suite', cmds:10, tag:'admin'},
+  {name:'security', desc:'20 defensive modules', cmds:8, tag:'beryllium'},
+  {name:'servercopy', desc:'Clone roles, channels, emojis', cmds:2, tag:'admin'},
+  {name:'stats', desc:'Server analytics', cmds:15, tag:'all'},
+  {name:'tickets', desc:'Full ticket system', cmds:5, tag:'admin'},
+  {name:'utility', desc:'Utility commands', cmds:25, tag:'all'},
+  {name:'vi', desc:'Ghost-post / admin announce', cmds:3, tag:'admin'},
+  {name:'vip', desc:'VIP role management', cmds:4, tag:'admin'},
+  {name:'welcome', desc:'Join/leave messages', cmds:3, tag:'admin'},
+];
+
+const COMMANDS = [
+  {name:'/fun 8ball',     desc:'Ask the magic 8-ball', tag:'all-users'},
+  {name:'/fun joke',      desc:'Get a random joke', tag:'all-users'},
+  {name:'/fun coinflip',  desc:'Flip a coin', tag:'all-users'},
+  {name:'/fun roll',      desc:'Roll dice', tag:'all-users'},
+  {name:'/fun quote',     desc:'Random inspirational quote', tag:'all-users'},
+  {name:'/fun rps',       desc:'Rock Paper Scissors', tag:'all-users'},
+  {name:'/fun meme',      desc:'Send a random meme', tag:'all-users'},
+  {name:'/util avatar',   desc:'Show member avatar', tag:'all-users'},
+  {name:'/util banner',   desc:'Show member banner', tag:'all-users'},
+  {name:'/util roleinfo', desc:'Info about a role', tag:'all-users'},
+  {name:'/leaderboard',   desc:'Role count leaderboard', tag:'all-users'},
+  {name:'/activity',      desc:'Server activity snapshot', tag:'all-users'},
+  {name:'/warn',          desc:'Warn a member', tag:'admin'},
+  {name:'/mute',          desc:'Mute a member', tag:'admin'},
+  {name:'/kick',          desc:'Kick a member', tag:'admin'},
+  {name:'/ban',           desc:'Ban a member', tag:'admin'},
+  {name:'/unban',         desc:'Unban a user', tag:'admin'},
+  {name:'/purge',         desc:'Bulk delete messages', tag:'admin'},
+  {name:'/timeout',       desc:'Timeout a member', tag:'admin'},
+  {name:'/slowmode',      desc:'Set slowmode delay', tag:'admin'},
+  {name:'/lock',          desc:'Lock current channel', tag:'admin'},
+  {name:'/unlock',        desc:'Unlock current channel', tag:'admin'},
+  {name:'/role_add',      desc:'Add role to member', tag:'admin'},
+  {name:'/role_remove',   desc:'Remove role from member', tag:'admin'},
+  {name:'/ticket',        desc:'Open a support ticket', tag:'all-users'},
+  {name:'/panel',         desc:'Deploy ticket panel', tag:'admin'},
+  {name:'/close',         desc:'Close a ticket', tag:'admin'},
+  {name:'/vip_grant',     desc:'Grant VIP role', tag:'admin'},
+  {name:'/vip_revoke',    desc:'Revoke VIP role', tag:'admin'},
+  {name:'/beryllium',     desc:'Beryllium status', tag:'beryllium'},
+  {name:'/vi',            desc:'Ghost-post embed', tag:'admin'},
+  {name:'/vi_plain',      desc:'Ghost-post plain text', tag:'admin'},
+  {name:'/vi_dm',         desc:'DM as bot', tag:'admin'},
+  {name:'/server_copy',   desc:'Copy server structure', tag:'admin'},
+  {name:'/server_paste',  desc:'Paste server structure', tag:'admin'},
+  {name:'/security',      desc:'Security module status', tag:'beryllium'},
+  {name:'/lockdown',      desc:'Full server lockdown', tag:'admin'},
+  {name:'/nuke',          desc:'Nuke channel list', tag:'admin'},
+  {name:'/kickall',       desc:'Kick all members', tag:'admin'},
+  {name:'/activate',      desc:'Verify YouTube sub', tag:'all-users'},
+  {name:'/imagepanel',    desc:'Deploy image click panel', tag:'admin'},
+  {name:'/info',          desc:'Bot information', tag:'all-users'},
+  {name:'/stats',         desc:'Detailed bot stats', tag:'all-users'},
+  {name:'/uptime',        desc:'Live uptime tracker', tag:'all-users'},
+  {name:'/menu',          desc:'Main control panel', tag:'admin'},
+];
+
+const SECURITY_MODULES = [
+  {num:'01', name:'AI Intrusion Detection', desc:'Detects suspicious access patterns using ML heuristics'},
+  {num:'02', name:'Behavioral Anomaly Detection', desc:'Flags users with abnormal activity spikes'},
+  {num:'03', name:'Anti-Raid Shield', desc:'Auto-lockdown on mass join events'},
+  {num:'04', name:'Zero-Trust Access Control', desc:'Minimum 30 day account age enforcement'},
+  {num:'05', name:'Token Leak Scanner', desc:'Scans messages for exposed Discord tokens'},
+  {num:'06', name:'Webhook Hijack Detection', desc:'Monitors for unauthorized webhook usage'},
+  {num:'07', name:'Suspicious Link Sandbox', desc:'Analyzes links in a sandboxed environment'},
+  {num:'08', name:'Phishing Domain Intelligence', desc:'Cross-references against known phishing domains'},
+  {num:'09', name:'Malware Hash Checker', desc:'Checks file hashes against reputation databases'},
+  {num:'10', name:'Encrypted Evidence Logger', desc:'Stores encrypted audit trail'},
+  {num:'11', name:'Account Takeover Detection', desc:'Identifies sudden behavior changes post-login'},
+  {num:'12', name:'API Abuse Monitor', desc:'Rate-limits suspicious API call patterns'},
+  {num:'13', name:'Social Engineering Detection', desc:'Flags manipulation language in messages'},
+  {num:'14', name:'Deep Packet Pattern Analyzer', desc:'Analyzes message payload structures'},
+  {num:'15', name:'Permission Escalation Detector', desc:'Alerts on unauthorized permission grabs'},
+  {num:'16', name:'AI Spam Recognition', desc:'Neural pattern matching for spam detection'},
+  {num:'17', name:'Dark Web Credential Monitor', desc:'Monitors for leaked server credentials'},
+  {num:'18', name:'Botnet Activity Detector', desc:'Identifies coordinated bot behavior'},
+  {num:'19', name:'Message Payload Forensics', desc:'Deep inspection of flagged messages'},
+  {num:'20', name:'Advanced Audit Intelligence', desc:'Correlates audit log events for threat patterns'},
+];
+
+// ── Init ──────────────────────────────────────────────────────
+function init() {
+  renderCogTable();
+  renderCmdGrid();
+  renderSecurityModules();
+  updateUptime();
+  simulateStats();
+  simulateLiveLog();
+  setInterval(updateUptime, 1000);
+  setInterval(simulateStats, 5000);
+  setInterval(rotateStatus, 15000);
+}
+
+function renderCogTable() {
+  const tb = document.getElementById('cog-table-body');
+  tb.innerHTML = COGS.map(c => `
+    <tr>
+      <td><span class="cog-name">cogs.${c.name}</span></td>
+      <td>${c.desc}</td>
+      <td><span style="font-family:var(--mono);font-size:11px;color:var(--text3)">${c.cmds || '—'}</span></td>
+      <td><span class="cog-status loaded"><span class="cog-dot"></span>Loaded</span></td>
+      <td>
+        <button class="btn" style="padding:4px 10px;font-size:10px" onclick="notify('🔄 Reloading cogs.${c.name}...','info');setTimeout(()=>notify('✅ cogs.${c.name} reloaded!','ok'),1200)">↺ Reload</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderCmdGrid(filter='all') {
+  const grid = document.getElementById('cmd-grid');
+  let cmds = COMMANDS;
+  if (filter !== 'all') cmds = COMMANDS.filter(c => c.tag === filter);
+  grid.innerHTML = cmds.map(c => {
+    let tagColor = c.tag;
+    if (c.tag === 'all-users') tagColor = 'all';
+    return `
+      <div class="cmd-card">
+        <div class="cmd-name">${c.name}</div>
+        <div class="cmd-desc">${c.desc}</div>
+        <span class="cmd-tag ${tagColor}">${c.tag}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterCmds(filter, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderCmdGrid(filter);
+}
+
+function renderSecurityModules() {
+  const grid = document.getElementById('sec-modules');
+  grid.innerHTML = SECURITY_MODULES.map((m, i) => `
+    <div class="sec-module">
+      <div class="sec-num">${m.num}</div>
+      <div style="flex:1">
+        <div class="sec-name">${m.name}</div>
+        <div class="sec-desc">${m.desc}</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" checked onchange="updateSecCount()"/>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+  `).join('');
+}
+
+function updateSecCount() {
+  const count = document.querySelectorAll('#sec-modules input[type=checkbox]:checked').length;
+  document.getElementById('sec-active').textContent = count;
+}
+
+function toggleAllSecurity(state) {
+  document.querySelectorAll('#sec-modules input[type=checkbox]').forEach(cb => cb.checked = state);
+  updateSecCount();
+  notify(state ? '✅ All security modules enabled!' : '⚠️ All modules disabled.', state ? 'ok' : 'warn');
+}
+
+// ── Uptime & Stats ────────────────────────────────────────────
+function updateUptime() {
+  const sec = Math.floor((Date.now() - startTime) / 1000);
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  const str = `${String(d).padStart(2,'0')}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+  const el = document.getElementById('uptime-display');
+  if (el) el.textContent = str;
+}
+
+function simulateStats() {
+  const lat = Math.floor(30 + Math.random() * 60);
+  document.getElementById('stat-guilds').textContent = '1';
+  document.getElementById('stat-members').textContent = (Math.floor(200 + Math.random() * 50)).toLocaleString();
+  document.getElementById('stat-latency').textContent = lat;
+
+  const ld = document.getElementById('latency-display');
+  if (ld) ld.textContent = lat;
+
+  const dots = document.querySelectorAll('#latency-dots .latency-dot');
+  const litCount = lat < 50 ? 5 : lat < 80 ? 4 : lat < 110 ? 3 : lat < 150 ? 2 : 1;
+  dots.forEach((d, i) => d.classList.toggle('lit', i < litCount));
+}
+
+// ── Live Log ──────────────────────────────────────────────────
+const LOG_MESSAGES = [
+  ['ok', '✅ Bot heartbeat OK'],
+  ['info', '📡 Status rotated'],
+  ['ok', '🟢 All systems nominal'],
+  ['info', '📦 Cog check passed'],
+  ['warn', '⚡ API rate limit nudged'],
+  ['ok', '🔒 Security scan complete'],
+  ['info', '🎮 Status: Watching CO Server'],
+  ['ok', '👥 Member joined — auto-role assigned'],
+  ['info', '🎫 Ticket #0042 opened'],
+  ['ok', '✅ Slash command sync OK'],
+];
+let logIdx = 0;
+function addLog(feed, tag, msg) {
+  const now = new Date();
+  const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const el = document.getElementById(feed);
+  if (!el) return;
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">${time}</span><span class="log-tag ${tag}">${tag.toUpperCase()}</span><span class="log-msg">${msg}</span>`;
+  el.prepend(line);
+  if (el.children.length > 50) el.removeChild(el.lastChild);
+}
+
+function simulateLiveLog() {
+  const [tag, msg] = LOG_MESSAGES[logIdx++ % LOG_MESSAGES.length];
+  addLog('live-log', tag, msg);
+  addLog('full-log', tag, msg);
+  setTimeout(simulateLiveLog, 2000 + Math.random() * 3000);
+}
+
+// ── Navigation ────────────────────────────────────────────────
+const PAGE_META = {
+  dashboard: { title: 'Dashboard', sub: 'CO Advanced Bot v6.1' },
+  config: { title: '⚙️ Configuration', sub: 'Edit config.json settings' },
+  cogs: { title: '📦 Cog Manager', sub: '18 extensions loaded' },
+  commands: { title: '💬 Commands', sub: '95+ slash commands' },
+  moderation: { title: '🛡️ Moderation', sub: 'warn/mute/kick/ban/purge' },
+  tickets: { title: '🎫 Ticket System', sub: 'Support ticket management' },
+  welcome: { title: '👋 Welcome System', sub: 'Join/leave & auto-roles' },
+  roles: { title: '🎭 Role Management', sub: 'Manage server roles' },
+  security: { title: '🔒 Security Suite', sub: '20 defensive modules' },
+  lockdown: { title: '🔴 Lockdown Suite', sub: 'Emergency controls' },
+  vip: { title: '👑 VIP & Beryllium', sub: 'Premium member management' },
+  activation: { title: '🔐 Activation', sub: 'YouTube sub verification' },
+  vi: { title: '📢 Voice Inject', sub: 'Admin ghost-post' },
+  customcmds: { title: '✏️ Custom Commands', sub: 'Trigger-response commands' },
+  logs: { title: '📋 Activity Logs', sub: 'Live session log stream' },
+};
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(name)) n.classList.add('active');
+  });
+  const meta = PAGE_META[name] || {title: name, sub: ''};
+  document.getElementById('topbar-title').textContent = meta.title;
+  document.getElementById('topbar-sub').textContent = meta.sub;
+  currentPage = name;
+}
+
+// ── Notification ──────────────────────────────────────────────
+let notifTimer;
+function notify(msg, type='ok') {
+  const n = document.getElementById('notification');
+  const icon = {ok:'✅', info:'ℹ️', warn:'⚠️', err:'🔴'}[type] || '✅';
+  document.getElementById('notif-icon').textContent = icon;
+  document.getElementById('notif-text').textContent = msg;
+  n.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => n.classList.remove('show'), 3500);
+  addLog('full-log', type === 'ok' ? 'ok' : type === 'err' ? 'err' : 'info', msg);
+}
+
+// ── Actions ───────────────────────────────────────────────────
+function saveConfig() {
+  notify('💾 Configuration saved to config.json!', 'ok');
+}
+
+function nextStatus() {
+  statusIdx = (statusIdx + 1) % STATUS_MESSAGES.length;
+  const s = STATUS_MESSAGES[statusIdx];
+  document.getElementById('status-type').textContent = s.type;
+  document.getElementById('status-text').textContent = s.text;
+  notify('🎮 Status updated!', 'info');
+}
+
+function rotateStatus() {
+  statusIdx = (statusIdx + 1) % STATUS_MESSAGES.length;
+  const s = STATUS_MESSAGES[statusIdx];
+  const t = document.getElementById('status-type');
+  const tx = document.getElementById('status-text');
+  if (t) t.textContent = s.type;
+  if (tx) tx.textContent = s.text;
+}
+
+function modAction(action) {
+  const user = document.getElementById('mod-user').value || '—';
+  const reason = document.getElementById('mod-reason').value || 'No reason specified';
+  notify(`${action} executed on user ${user}`, 'ok');
+  addLog('mod-log', 'warn', `${action} → User ${user} | ${reason}`);
+  addLog('full-log', 'warn', `[MOD] ${action} → User ${user} | ${reason}`);
+}
+
+function roleAction(action) {
+  const user = document.getElementById('role-user').value || '—';
+  const role = document.getElementById('role-name').value || '—';
+  notify(`Role "${role}" ${action === 'add' ? 'added to' : 'removed from'} user ${user}`, 'ok');
+}
+
+function lockdownAction(action) {
+  notify(`🔴 Executing: ${action}...`, 'warn');
+  addLog('full-log', 'err', `[LOCKDOWN] ${action} executed`);
+}
+
+function confirmDanger(action) {
+  if (confirm(`⚠️ DANGER: Are you absolutely sure you want to ${action}? This CANNOT be undone.`)) {
+    notify(`💥 ${action} — executing...`, 'err');
+    addLog('full-log', 'err', `[DANGER] ${action} initiated`);
+  }
+}
+
+function viSend() {
+  const type = document.getElementById('vi-type').value;
+  const target = document.getElementById('vi-target').value || '—';
+  const content = document.getElementById('vi-content').value;
+  if (!content) { notify('❌ Please enter message content.', 'err'); return; }
+  notify(`📢 VI message sent to ${target}!`, 'ok');
+  addLog('vi-log', 'info', `[${type}] → ${target}: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`);
+}
+
+function addCustomCmd() {
+  const name = document.getElementById('cc-name').value.trim();
+  const response = document.getElementById('cc-response').value.trim();
+  const plan = document.getElementById('cc-plan').value;
+  if (!name || !response) { notify('❌ Please fill in command name and response.', 'err'); return; }
+  customCmds[name] = { response, plan };
+  renderCustomCmds();
+  document.getElementById('cc-name').value = '';
+  document.getElementById('cc-response').value = '';
+  notify(`✅ Command !${name} added!`, 'ok');
+}
+
+function renderCustomCmds() {
+  const list = document.getElementById('cc-list');
+  if (Object.keys(customCmds).length === 0) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:20px">No custom commands yet.</div>';
+    return;
+  }
+  list.innerHTML = Object.entries(customCmds).map(([name, cmd]) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--border)">
+      <span class="cog-name">!${name}</span>
+      <span class="cmd-tag ${cmd.plan}">${cmd.plan}</span>
+      <span style="font-size:11px;color:var(--text3);flex:1">${cmd.response.substring(0,60)}…</span>
+      <button class="btn" style="padding:3px 8px;font-size:10px" onclick="deleteCmd('${name}')">✖</button>
+    </div>
+  `).join('');
+}
+
+function deleteCmd(name) {
+  delete customCmds[name];
+  renderCustomCmds();
+  notify(`🗑️ Command !${name} deleted.`, 'info');
+}
+
+function updateWelcomePreview() {
+  const msg = document.getElementById('welcome-msg').value;
+  const preview = msg
+    .replace('{mention}', '<span style="color:var(--accent)">@NewMember</span>')
+    .replace('{count}', '<strong>42nd</strong>')
+    .replace('{server}', '<strong>CO Server</strong>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br/>');
+  document.getElementById('welcome-preview').innerHTML = preview;
+}
+
+// ── Start ─────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
