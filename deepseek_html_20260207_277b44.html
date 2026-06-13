@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMP MOBILE V5 | Premium Edition</title>
+    <!-- خطوط عربية واحترافية -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <!-- مكتبة أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة animate.css للحركات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Toast notifications -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    
+    <style>
+        /* المتغيرات الأساسية للتصميم الفخم */
+        :root {
+            --primary: #6C5CE7;
+            --primary-dark: #4834d4;
+            --accent: #00cec9;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --error: #ff7675;
+            --dark-bg: #0f1014;
+            --dark-card: #1e1f26;
+            --light-bg: #f5f6fa;
+            --light-card: #ffffff;
+            --text-main: #ffffff;
+            --text-muted: #b2bec3;
+            --gradient: linear-gradient(135deg, #6C5CE7 0%, #00cec9 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.3);
+            --border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* وضع الضوء */
+        .light-mode {
+            --dark-bg: #f5f6fa;
+            --dark-card: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border: 1px solid rgba(0,0,0,0.1);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* شريط التمرير المخصص */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--primary); 
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* مؤشر التقدم */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: var(--gradient);
+            z-index: 1001;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar"></div>
+    <h1>SAMP MOBILE V5 - Premium Edition</h1>
+    <p>تم نقل المحتوى بنجاح!</p>
+</body>
+</html>
